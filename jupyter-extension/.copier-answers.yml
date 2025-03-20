@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.3.8
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: franek@example.com
+author_name: Franciszek Piszcz
+data_format: string
+file_extension: ''
+has_binder: false
+has_settings: true
+kind: frontend
+labextension_name: notebookpack-runtime
+mimetype: ''
+mimetype_name: ''
+project_short_description: NotebookPack Runtime Initializer
+python_name: notebookpack_runtime
+repository: https://github.com/franekp/notebookpack-runtime
+test: false
+viewer_name: ''
+

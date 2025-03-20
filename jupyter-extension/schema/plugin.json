@@ -1,0 +1,8 @@
+{
+  "jupyter.lab.shortcuts": [],
+  "title": "notebookpack-runtime",
+  "description": "notebookpack-runtime settings.",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}
