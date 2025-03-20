@@ -1,9 +1,10 @@
 import {
   JupyterFrontEnd,
-  JupyterFrontEndPlugin
+  JupyterFrontEndPlugin,
+  ILabShell,
 } from '@jupyterlab/application';
 
-import { ISettingRegistry } from '@jupyterlab/settingregistry';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 /**
  * Initialization data for the notebookpack-runtime extension.
@@ -12,20 +13,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: 'notebookpack-runtime:plugin',
   description: 'NotebookPack Runtime Initializer',
   autoStart: true,
-  optional: [ISettingRegistry],
-  activate: (app: JupyterFrontEnd, settingRegistry: ISettingRegistry | null) => {
+  requires: [ILabShell, IDocumentManager],
+  activate: (jupyter_frontend: JupyterFrontEnd, ilabshell: ILabShell, idocumentmanager: IDocumentManager) => {
     console.log('JupyterLab extension notebookpack-runtime is activated!');
-
-    if (settingRegistry) {
-      settingRegistry
-        .load(plugin.id)
-        .then(settings => {
-          console.log('notebookpack-runtime settings loaded:', settings.composite);
-        })
-        .catch(reason => {
-          console.error('Failed to load settings for notebookpack-runtime.', reason);
-        });
-    }
+    (window as any).jupyter_frontend = jupyter_frontend;
+    (window as any).ilabshell = ilabshell;
+    (window as any).idocumentmanager = idocumentmanager;
   }
 };
 

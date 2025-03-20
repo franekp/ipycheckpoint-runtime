@@ -250,7 +250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/application@npm:^4.0.0":
+"@jupyterlab/application@npm:^4.3.6":
   version: 4.3.6
   resolution: "@jupyterlab/application@npm:4.3.6"
   dependencies:
@@ -383,6 +383,31 @@ __metadata:
     path-browserify: ^1.0.0
     url-parse: ~1.5.4
   checksum: 6e76dbc798e69d5e813bd624eb9804a93d9fb88f6908708fefb3b55d87115b6820c06ad1da9810f7044cfff55f1d7ceff28799aa09d47d7de63d1deb9d23109d
+  languageName: node
+  linkType: hard
+
+"@jupyterlab/docmanager@npm:^4.3.6":
+  version: 4.3.6
+  resolution: "@jupyterlab/docmanager@npm:4.3.6"
+  dependencies:
+    "@jupyterlab/apputils": ^4.4.6
+    "@jupyterlab/coreutils": ^6.3.6
+    "@jupyterlab/docregistry": ^4.3.6
+    "@jupyterlab/services": ^7.3.6
+    "@jupyterlab/statedb": ^4.3.6
+    "@jupyterlab/statusbar": ^4.3.6
+    "@jupyterlab/translation": ^4.3.6
+    "@jupyterlab/ui-components": ^4.3.6
+    "@lumino/algorithm": ^2.0.2
+    "@lumino/coreutils": ^2.2.0
+    "@lumino/disposable": ^2.1.3
+    "@lumino/messaging": ^2.0.2
+    "@lumino/polling": ^2.1.3
+    "@lumino/properties": ^2.0.2
+    "@lumino/signaling": ^2.1.3
+    "@lumino/widgets": ^2.5.0
+    react: ^18.2.0
+  checksum: 46406c7f005066768cae0bfb80c85043a6f1cdbbd0b65b6d06ee8d9c29ca1af89a38fb6315cb12145dc1f9d668aec02442fdf12be70df6da5d03bfa268884f83
   languageName: node
   linkType: hard
 
@@ -3294,8 +3319,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "notebookpack-runtime@workspace:."
   dependencies:
-    "@jupyterlab/application": ^4.0.0
+    "@jupyterlab/application": ^4.3.6
+    "@jupyterlab/apputils": ^4.4.6
     "@jupyterlab/builder": ^4.0.0
+    "@jupyterlab/docmanager": ^4.3.6
     "@jupyterlab/settingregistry": ^4.0.0
     "@types/json-schema": ^7.0.11
     "@types/react": ^18.0.26
