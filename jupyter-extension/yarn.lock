@@ -3323,6 +3323,8 @@ __metadata:
     "@jupyterlab/apputils": ^4.4.6
     "@jupyterlab/builder": ^4.0.0
     "@jupyterlab/docmanager": ^4.3.6
+    "@jupyterlab/docregistry": ^4.3.6
+    "@jupyterlab/services": ^7.3.6
     "@jupyterlab/settingregistry": ^4.0.0
     "@types/json-schema": ^7.0.11
     "@types/react": ^18.0.26
