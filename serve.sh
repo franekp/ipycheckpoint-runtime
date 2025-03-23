@@ -14,5 +14,4 @@ fi
 
 set -eu -o pipefail
 
-conda activate notebookpack
 (cd jupyterlite-dist/site; python -m http.server -b 127.0.0.1)

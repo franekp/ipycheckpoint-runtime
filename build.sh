@@ -14,6 +14,10 @@ fi
 
 set -eu -o pipefail
 
-conda activate notebookpack
+if ! [[ $(which python) =~ "notebookpack" ]]; then
+   echo "Source activate-setup.sh first"
+   exit 1
+fi
+
 (cd jupyter-extension; jlpm run build)
 (cd jupyterlite-dist; jupyter lite build --output-dir site)
