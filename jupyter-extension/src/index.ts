@@ -68,25 +68,28 @@ const plugin: JupyterFrontEndPlugin<void> = {
     (window as any).ilabshell = ilabshell;
     (window as any).idocumentmanager = idocumentmanager;
 
-    ilabshell.collapseLeft();
-    ilabshell.collapseRight();
-    ilabshell.toggleSideTabBarVisibility("left");
-    ilabshell.toggleSideTabBarVisibility("right");
-    ilabshell.mode = 'single-document';
-
-    const doc = idocumentmanager.createNew('Untitled3.ipynb', 'default', {name: 'python'});
-
-    if (!doc || !(doc instanceof DocumentWidget)) {
-      return;
-    }
-
-    const nb = new Notebook(doc);
-
     (async () => {
+      await timeout(300);
+      ilabshell.collapseLeft();
+      ilabshell.collapseRight();
+      ilabshell.toggleSideTabBarVisibility("left");
+      ilabshell.toggleSideTabBarVisibility("right");
+      ilabshell.mode = 'single-document';
+
+      const doc = idocumentmanager.createNew('Untitled.ipynb', 'default', {name: 'python'});
+
+      if (!doc || !(doc instanceof DocumentWidget)) {
+        return;
+      }
+
+      (window as any).doc = doc;
+
+      const nb = new Notebook(doc);
       await nb.executeHidden(init_inherited_env);
       nb.addCodeCell(print_inherited_env);
     })();
 
+    /*
     (async () => {
       let kernel: IKernelConnection = await nb._waitForKernel();
       
@@ -117,6 +120,7 @@ for _k, _v in list(globals().items()):
       doc.content.model.sharedModel.addCell()  // TODO: maybe construct the cell?
 
     });
+    */
   }
 };
 

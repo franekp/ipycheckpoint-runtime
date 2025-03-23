@@ -24,3 +24,9 @@ if ! conda activate notebookpack; then
     return
 fi
 conda install -c conda-forge jupyterlite-pyodide-kernel || return
+
+(
+    cd jupyter-extension \
+    && pip install -e . \
+    && jupyter labextension develop --overwrite .
+) || return

@@ -13,9 +13,3 @@ if ! ls jupyter-extension/notebookpack_runtime/__init__.py >/dev/null 2>&1; then
 fi
 
 conda activate notebookpack
-
-(
-    cd jupyter-extension \
-    && pip install -e . \
-    && jupyter labextension develop --overwrite .
-) || return
