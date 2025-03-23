@@ -6,7 +6,6 @@ import {
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { DocumentWidget, DocumentRegistry } from '@jupyterlab/docregistry';
-import { KernelManager } from '@jupyterlab/services';
 import { ISharedNotebook, ISharedCell, SharedCell } from '@jupyter/ydoc';
 import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
 
@@ -42,14 +41,18 @@ class Notebook {
     await kernel.requestExecute({code}).done;
   }
 
-  async executeInNewCell(code: string) {
-
+  async executeInNewCell(code: string): ISharedCell {
+    throw new Error("Unimplemented")
   }
-
-  
-
-  
 }
+
+const init_inherited_env = 'injected_var = "Hello World!"';
+const print_inherited_env = `
+print('Inherited globals:')
+for _k, _v in list(globals().items()):
+    if _k.startswith('_') or _k in ['In', 'Out', 'exit', 'quit', 'open', 'get_ipython']: continue
+    print(f'    {_k}: {type(_v).__name__}')
+`.trim();
 
 /**
  * Initialization data for the notebookpack-runtime extension.
@@ -59,9 +62,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
   description: 'NotebookPack Runtime Initializer',
   autoStart: true,
   requires: [ILabShell, IDocumentManager],
-  activate: (jupyter_frontend: JupyterFrontEnd, ilabshell: ILabShell, idocumentmanager: IDocumentManager) => {
+  activate: (jupyterFrontEnd: JupyterFrontEnd, ilabshell: ILabShell, idocumentmanager: IDocumentManager) => {
     console.log('JupyterLab extension notebookpack-runtime is activated!');
-    (window as any).jupyter_frontend = jupyter_frontend;
+    (window as any).jupyter_frontend = jupyterFrontEnd;
     (window as any).ilabshell = ilabshell;
     (window as any).idocumentmanager = idocumentmanager;
 
@@ -78,6 +81,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 
     const nb = new Notebook(doc);
+
+    (async () => {
+      await nb.executeHidden(init_inherited_env);
+      nb.addCodeCell(print_inherited_env);
+    })();
 
     (async () => {
       let kernel: IKernelConnection | undefined;
@@ -107,12 +115,8 @@ for _k, _v in list(globals().items()):
 
       doc.content.model.sharedModel.addCell()
 
-    })();
-
-    setTimeout(() => {
-      const kk = 
-      await kk.requestExecute({code: 'injected_var = "Hello World!"'})
-    }, 200);
+    });
+  }
 };
 
 export default plugin;
