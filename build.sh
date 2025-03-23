@@ -19,5 +19,5 @@ if ! [[ $(which python) =~ "notebookpack" ]]; then
    exit 1
 fi
 
-(cd jupyter-extension; jlpm run build)
+(cd jupyter-extension && jlpm run build)
 (cd jupyterlite-dist; jupyter lite build --output-dir site)
