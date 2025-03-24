@@ -1,3 +1,6 @@
+/jupyterlite-dist/site
+/jupyterlite-dist/.jupyterlite.doit.db
+
 # Logs
 logs
 *.log
