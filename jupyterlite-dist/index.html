@@ -2,26 +2,46 @@
   <title>Example bridge between a host app and JupyterLite</title>
   <body>
     <script type="text/javascript">
-      /* Outgoing messages */
-      function toggle() {
-        window.frames.jupyterlab.postMessage({ type: 'from-host-to-iframe' });
-      }
+      /*
+        type Message =
+          | { kind: 'IFrameToHost', type: 'InitialPayloadRequest' }
+          | { kind: 'HostToIFrame', type: 'InitialPayloadResponse', envInitializer: string, initialCells: string[] }
+          | { kind: 'IFrameToHost', type: 'NotebookReady' }
+      */
+
+      const envInitializer = 'injected_var = "Hello World!"';
+      const printInheritedEnv = `
+print('Inherited globals:')
+for _k, _v in list(globals().items()):
+    if _k.startswith('_') or _k in ['In', 'Out', 'exit', 'quit', 'open', 'get_ipython']: continue
+    print(f'    {_k}: {type(_v).__name__}')
+`.trim();
+      const helloWorld = "print('Hello world!')";
+      const initialCells = [printInheritedEnv, helloWorld];
 
       /* Incoming messages */
       window.addEventListener('message', (event) => {
-        if (event.data.type === 'from-iframe-to-host') {
-          document.getElementById('chosenTheme').innerText = event.data.theme;
+        const data = event.data;
+        const iframe = document.querySelector('#embedded-jupyterlab-123');
+        if (!iframe) {
+          console.error('IFrame "#embedded-jupyterlab-123" not found!');
+          return
+        }
+        if (data.type == 'InitialPayloadRequest') {
+          console.log(`HOST PAGE: 'InitialPayloadRequest' received! responding...`);
+          iframe.contentWindow.postMessage({
+            kind: 'HostToIFrame',
+            type: 'InitialPayloadResponse',
+            envInitializer, initialCells,
+          }, '*');
+        } else {
+          console.log(`HOST PAGE: unknown message '${event.data.type}' received!`);
         }
       });
     </script>
     <h2>Below is a JupyterLite site running in an IFrame</h2>
-    <p>
-      Click the following button sends a message to the JupyterLab IFrame to toggle the
-      theme.
-    </p>
-    <p>The IFrame indicates that the current theme is: <em id="chosenTheme"></em></p>
-    <input type="button" value="Toggle the JupyterLab Theme" onclick="toggle()" />
     <iframe
+      id="embedded-jupyterlab-123"
       name="jupyterlab"
       src="site/"
       width="100%"

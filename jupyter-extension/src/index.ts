@@ -64,13 +64,26 @@ class NotebookController {
   }
 }
 
-const init_inherited_env = 'injected_var = "Hello World!"';
-const print_inherited_env = `
-print('Inherited globals:')
-for _k, _v in list(globals().items()):
-    if _k.startswith('_') or _k in ['In', 'Out', 'exit', 'quit', 'open', 'get_ipython']: continue
-    print(f'    {_k}: {type(_v).__name__}')
-`.trim();
+type Message =
+  | { kind: 'IFrameToHost', type: 'InitialPayloadRequest' }
+  | { kind: 'HostToIFrame', type: 'InitialPayloadResponse', envInitializer: string, initialCells: string[] }
+  | { kind: 'IFrameToHost', type: 'NotebookReady' }
+
+function waitForMessage<T extends Message['type']>(targetWindow: Window, type: T): Promise<Message & {type: T}> {
+  return new Promise(resolve => {
+    const handleMessage = (event: MessageEvent<Message>) => {
+      const data = event.data;
+      if (data.type === type) {
+        console.log(`IFRAME: '${type}' received! initializing...`);
+        targetWindow.removeEventListener('message', handleMessage);
+        resolve(data as any);  // apparently generic type refinement is too much for TypeScript
+      } else {
+        console.log(`IFRAME: unknown message '${type}' received!`);
+      }
+    };
+    targetWindow.addEventListener('message', handleMessage);
+  })
+}
 
 /**
  * Initialization data for the notebookpack-runtime extension.
@@ -87,7 +100,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     (window as any).idocumentmanager = idocumentmanager;
 
     (async () => {
-      await timeout(300);
+      await timeout(300);  // ILabShell needs some time to initialize...
       ilabshell.collapseLeft();
       ilabshell.collapseRight();
       ilabshell.toggleSideTabBarVisibility("left");
@@ -105,8 +118,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       (window as any).NotebookActions = NotebookActions;
 
       const nb = new NotebookController(doc);
-      await nb.executeHidden(init_inherited_env);
-      await nb.initWithCodeCells([print_inherited_env, "print('Hello world!')"]);
+
+      console.log(`IFRAME: sending 'InitialPayloadRequest' ...`);
+      window.parent.postMessage({ kind: 'IFrameToHost', type: 'InitialPayloadRequest' }, '*');
+      const payload = await waitForMessage(window, 'InitialPayloadResponse');
+
+      await nb.executeHidden(payload.envInitializer);
+      await nb.initWithCodeCells(payload.initialCells);
       await nb.runAllCells();
     })();
   }
