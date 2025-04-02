@@ -1,5 +1,62 @@
 <html>
-  <title>Example bridge between a host app and JupyterLite</title>
+  <head>
+    <title>Example bridge between a host app and JupyterLite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            height: calc(100vh - 200px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .loading-bar-container {
+            width: calc(100vw - 200px);
+            height: 40px;
+            border: 4px solid white;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+            padding: 4px;
+        }
+
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background: white;
+            animation: loadingProgress 25s linear infinite;
+        }
+
+        @keyframes loadingProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+  </head>
   <body>
     <script type="text/javascript">
       /*
@@ -34,18 +91,28 @@ for _k, _v in list(globals().items()):
             type: 'InitialPayloadResponse',
             envInitializer, initialCells,
           }, '*');
+        } else if (data.type == 'NotebookReady') {
+          document.querySelector('.overlay').style.display = 'none';
         } else {
           console.log(`HOST PAGE: unknown message '${event.data.type}' received!`);
         }
       });
     </script>
     <h2>Below is a JupyterLite site running in an IFrame</h2>
-    <iframe
-      id="embedded-jupyterlab-123"
-      name="jupyterlab"
-      src="site/"
-      style="width: 100%; height: calc(100vh - 200px)"
-      sandbox="allow-scripts allow-same-origin"
-    ></iframe>
+    <div class="container">
+      <iframe
+        id="embedded-jupyterlab-123"
+        class="iframe-container"
+        name="jupyterlab"
+        src="site/"
+        sandbox="allow-scripts allow-same-origin"
+      ></iframe>
+      <div class="overlay">
+          <div class="loading-bar-container">
+              <div class="loading-bar"></div>
+          </div>
+      </div>
+    </div>
+    
   </body>
 </html>
