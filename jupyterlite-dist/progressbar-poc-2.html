@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe with Loading Overlay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            height: calc(100vh - 200px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .loading-bar-container {
+            width: calc(100vw - 200px);
+            height: 40px;
+            border: 4px solid white;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+            padding: 4px;
+        }
+
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background: white;
+            animation: loadingProgress 10s linear infinite;
+        }
+
+        @keyframes loadingProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <iframe class="iframe-container" src="https://example.com"></iframe>
+        <div class="overlay">
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
