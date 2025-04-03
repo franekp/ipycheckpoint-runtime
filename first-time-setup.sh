@@ -16,7 +16,7 @@ conda init || return
 conda create -n notebookpack \
     --override-channels --strict-channel-priority \
     -c conda-forge -c nodefaults \
-    jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core \
+    jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core jupyterlab_widgets \
     || return
 
 if ! conda activate notebookpack; then

@@ -74,7 +74,7 @@ function waitForMessage<T extends Message['type']>(targetWindow: Window, type: T
     const handleMessage = (event: MessageEvent<Message>) => {
       const data = event.data;
       if (data.type === type) {
-        console.log(`IFRAME: '${type}' received! initializing...`);
+        console.log(`IFRAME: '${type}' received! initializing...`, data);
         targetWindow.removeEventListener('message', handleMessage);
         resolve(data as any);  // apparently generic type refinement is too much for TypeScript
       } else {
