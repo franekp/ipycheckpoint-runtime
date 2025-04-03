@@ -10,6 +10,9 @@ jobs:
   build:
     name: Create Release
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
