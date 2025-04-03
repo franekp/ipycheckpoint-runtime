@@ -16,11 +16,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          channels: bioconda, conda-forge, defaults
+          use-only-tar-bz2: true  # IMPORTANT: This needs to be set for caching to work properly!
+          auto-update-conda: true
+          auto-activate-base: true
       - name: Conda init
         run: conda init
       - name: Build jupyterlite distribution
         run: |
-          . /home/runner/.bashrc
           . first-time-setup.sh
           ./build.sh
       - name: Create jupyterlite archive
