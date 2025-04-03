@@ -20,7 +20,7 @@ jobs:
         with:
           miniconda-version: "latest"
           channels: bioconda, conda-forge, defaults
-          use-only-tar-bz2: false  # IMPORTANT: This needs to be set for caching to work properly!
+          use-only-tar-bz2: false
           auto-update-conda: true
           auto-activate-base: true
       - name: Conda init
@@ -31,7 +31,8 @@ jobs:
           ./build.sh
       - name: Create jupyterlite archive
         run: |
-          zip -r notebookpack-runtime-${{ github.ref }}.zip jupyterlite-dist/site
+          mv jupyterlite-dist/site notebookpack-runtime
+          zip -r notebookpack-runtime-$(echo ${{ github.ref }} | cut -d '/' -f 3).zip notebookpack-runtime
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -50,6 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./notebookpack-runtime-${{ github.ref }}.zip
-          asset_name: notebookpack-runtime-${{ github.ref }}.zip
+          asset_path: ./notebookpack-runtime-$(echo ${{ github.ref }} | cut -d '/' -f 3).zip
+          asset_name: notebookpack-runtime-$(echo ${{ github.ref }} | cut -d '/' -f 3).zip
           asset_content_type: application/zip
