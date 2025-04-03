@@ -20,6 +20,7 @@ jobs:
         run: conda init
       - name: Build jupyterlite distribution
         run: |
+          . /home/runner/.bashrc
           . first-time-setup.sh
           ./build.sh
       - name: Create jupyterlite archive
