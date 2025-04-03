@@ -66,14 +66,24 @@
           | { kind: 'IFrameToHost', type: 'NotebookReady' }
       */
 
-      const envInitializer = 'injected_var = "Hello World!"';
+      const envInitializer = `
+import piplite
+await piplite.install(["plotly", "plotly-express", "nbformat", "ipywidgets", "seaborn", "itables"])
+injected_var = "Hello World!"
+`.trim();
       const printInheritedEnv = `
 print('Inherited globals:')
 for _k, _v in list(globals().items()):
-    if _k.startswith('_') or _k in ['In', 'Out', 'exit', 'quit', 'open', 'get_ipython']: continue
+    if _k.startswith('_') or _k in ['In', 'Out', 'exit', 'quit', 'open', 'get_ipython', 'piplite']: continue
     print(f'    {_k}: {type(_v).__name__}')
 `.trim();
-      const helloWorld = "print('Hello world!')";
+      const helloWorld = `
+import numpy as np
+import pandas as pd
+import plotly.express as px
+df = pd.DataFrame(dict(x=np.linspace(1, 100, 100), y=np.random.normal(size=[100])))
+px.line(df, x='x', y='y')
+`.trim();
       const initialCells = [printInheritedEnv, helloWorld];
 
       /* Incoming messages */

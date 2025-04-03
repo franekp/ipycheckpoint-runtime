@@ -125,9 +125,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
       await nb.executeHidden(payload.envInitializer);
       await nb.initWithCodeCells(payload.initialCells);
-      await nb.runAllCells();
-
       window.parent.postMessage({ kind: 'IFrameToHost', type: 'NotebookReady' }, '*');
+      await nb.runAllCells();
     })();
   }
 };
