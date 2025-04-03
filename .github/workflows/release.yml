@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Conda init
+        run: conda init
       - name: Build jupyterlite distribution
         run: |
           . first-time-setup.sh
