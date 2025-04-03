@@ -41,7 +41,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: Auto-generated release from ${{ github.ref }}
+          body: Auto-generated release ${{ github.ref }}
           draft: false
           prerelease: false
       - name: Upload Release Asset
