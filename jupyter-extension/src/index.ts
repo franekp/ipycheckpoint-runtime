@@ -68,6 +68,7 @@ type Message =
   | { kind: 'IFrameToHost', type: 'InitialPayloadRequest' }
   | { kind: 'HostToIFrame', type: 'InitialPayloadResponse', envInitializer: string, initialCells: string[] }
   | { kind: 'IFrameToHost', type: 'NotebookReady' }
+  | { kind: 'IFrameToHost', type: 'HeightUpdated', height: number }
 
 function waitForMessage<T extends Message['type']>(targetWindow: Window, type: T): Promise<Message & {type: T}> {
   return new Promise(resolve => {
@@ -100,6 +101,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     (window as any).idocumentmanager = idocumentmanager;
 
     (async () => {
+      setupHeightUpdates();
       await timeout(300);  // ILabShell needs some time to initialize...
       ilabshell.collapseLeft();
       ilabshell.collapseRight();
@@ -132,3 +134,57 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 export default plugin;
+
+async function setupHeightUpdates() {
+  // source: https://blog.codeminer42.com/enhancing-user-experience-with-dynamic-iframe-height/
+
+  let currentDocumentHeight = 0;
+
+  const sendMessageUpdatingHeight = (height: number) => {
+    window.parent.postMessage({ kind: 'IFrameToHost', type: 'HeightUpdated', height }, '*');
+  };
+
+  const handleDocumentMutation = () => {
+    const contentInsideScroll = document.querySelector('.jp-WindowedPanel-viewport');
+    const fixedSizeScrollContainer = document.querySelector('.jp-WindowedPanel-outer');
+    if (!contentInsideScroll) { return }
+    if (!fixedSizeScrollContainer) { return }
+
+    const toolbarHeight = contentInsideScroll.getBoundingClientRect().y + fixedSizeScrollContainer.scrollTop;
+    const statusBarHeight = 24;
+    const additionalSpace = 60;
+    const totalHeight = contentInsideScroll.scrollHeight + toolbarHeight + statusBarHeight + additionalSpace;
+
+    if (totalHeight && totalHeight !== currentDocumentHeight) {
+      currentDocumentHeight = totalHeight;
+      sendMessageUpdatingHeight(totalHeight);
+    }
+  };
+
+  const style = document.createElement('style');
+  style.innerHTML = '.jp-WindowedPanel-outer::after { display: none !important; } .jp-Notebook-footer { margin-top: 10px; }';
+  document.head.appendChild(style);
+
+  const observer = new MutationObserver(handleDocumentMutation);
+
+  let contentInsideScroll: any = null;
+  let fixedSizeScrollContainer: any = null;
+  while (!contentInsideScroll || !fixedSizeScrollContainer) {
+    await timeout(100);
+    contentInsideScroll = document.querySelector('.jp-WindowedPanel-viewport');
+    fixedSizeScrollContainer = document.querySelector('.jp-WindowedPanel-outer');
+  }
+
+  observer.observe(contentInsideScroll, {
+    subtree: true,
+    attributes: true,
+    childList: true,
+    characterData: true
+  });
+  observer.observe(fixedSizeScrollContainer, {
+    subtree: true,
+    attributes: true,
+    childList: true,
+    characterData: true
+  });
+}

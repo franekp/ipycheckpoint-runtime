@@ -9,8 +9,6 @@
         }
 
         .container {
-            width: 100%;
-            height: calc(100vh - 200px);
             position: relative;
             overflow: hidden;
         }
@@ -48,7 +46,7 @@
             width: 0%;
             height: 100%;
             background: white;
-            animation: loadingProgress 25s linear infinite;
+            animation: loadingProgress 40s linear infinite;
         }
 
         @keyframes loadingProgress {
@@ -64,6 +62,7 @@
           | { kind: 'IFrameToHost', type: 'InitialPayloadRequest' }
           | { kind: 'HostToIFrame', type: 'InitialPayloadResponse', envInitializer: string, initialCells: string[] }
           | { kind: 'IFrameToHost', type: 'NotebookReady' }
+          | { kind: 'IFrameToHost', type: 'HeightUpdated', height: number }
       */
 
       const envInitializer = `
@@ -103,13 +102,16 @@ px.line(df, x='x', y='y')
           }, '*');
         } else if (data.type == 'NotebookReady') {
           document.querySelector('.overlay').style.display = 'none';
+        } else if (data.type == 'HeightUpdated') {
+          console.log(`HOST PAGE: 'HeightUpdated' received! resizing iframe to ${data.height}...`);
+          document.querySelector('.container').style.height = `${data.height}px`;
         } else {
           console.log(`HOST PAGE: unknown message '${event.data.type}' received!`);
         }
       });
     </script>
     <h2>Below is a JupyterLite site running in an IFrame</h2>
-    <div class="container">
+    <div class="container" style="width: 100%; height: 221px;">
       <iframe
         id="embedded-jupyterlab-123"
         class="iframe-container"
@@ -123,6 +125,11 @@ px.line(df, x='x', y='y')
           </div>
       </div>
     </div>
+
+    <h2>Here is some content below the IFrame, to test how dynamic height interacts with scrolling</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat diam nec augue facilisis semper vitae ac quam. Cras a elit fringilla, blandit orci sed, rhoncus tortor. Nullam sed laoreet tortor. Maecenas urna nisi, congue vel leo commodo, varius convallis orci. Maecenas quis venenatis felis. Nunc turpis augue, pellentesque efficitur pulvinar vitae, venenatis non dui. Etiam cursus purus at odio ultricies efficitur. Cras pharetra mi nec justo vulputate, quis viverra mauris accumsan. Aenean mollis orci eros, in placerat augue malesuada semper. Integer euismod hendrerit cursus. Nunc posuere risus in tellus dapibus egestas. Mauris dapibus sagittis dolor, quis efficitur lectus interdum id. In cursus vehicula tempor. Curabitur ac porttitor libero. Curabitur id libero ac leo placerat sagittis eu sit amet diam. Phasellus faucibus massa ligula, id elementum diam bibendum quis.
+    </p>
     
   </body>
 </html>
