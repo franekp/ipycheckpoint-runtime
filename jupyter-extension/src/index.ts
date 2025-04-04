@@ -182,19 +182,9 @@ function setupStickyToolbar() {
 
     const delta = Math.abs(currentScrollTop - scrollTop);
     currentScrollTop = scrollTop;
-    console.log("DELTA: ", delta);
     recentDeltas.shift();
     recentDeltas.push(delta);
     const maxDelta = Math.max(...recentDeltas);
-    console.log("MAX_DELTA: ", maxDelta);
-    //let transition: string | null = null;
-    //if (maxDelta < 10) {
-    //  transition = 'all 3000ms ease-out';
-    //} else if (maxDelta < 15) {
-    //  transition = 'all 1500ms ease-out';
-    //} else {
-    //  transition = 'all 100ms ease-out';
-    //}
     applyOffsets('all 1500ms ease-out');
   }
 
@@ -204,7 +194,7 @@ function setupStickyToolbar() {
     currentScrollTop += 0.01;
     applyOffsets('all 200ms ease-out');
   };
-  const restoreNormalTransition = debounce(restoreNormalTransitionImpl, 200, false);
+  const restoreNormalTransition = debounce(restoreNormalTransitionImpl, 200);
 
   window.addEventListener('message', (event: MessageEvent<Message>) => {
     const data = event.data;
@@ -270,36 +260,16 @@ async function setupHeightUpdates() {
   });
 }
 
-function debounce(func: any, wait: any, immediate: any) {
+function debounce(func: any, wait: any) {
   let timeout: any;
-  let elapsed = 0;
 
   return function() {
     let context = this,
       args = arguments;
-    const callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(function() {
       timeout = null;
-      if (!callNow) {
-        func.apply(context, args);
-      }
+      func.apply(context, args);
     }, wait);
-
-    if (callNow) func.apply(context, args);
   }
-}
-
-function throttle(mainFunction: any, delay: any) {
-  let timerFlag: any = null; // Variable to keep track of the timer
-
-  // Returning a throttled version 
-  return (...args) => {
-    if (timerFlag === null) { // If there is no timer currently running
-      mainFunction(...args); // Execute the main function 
-      timerFlag = setTimeout(() => { // Set a timer to clear the timerFlag after the specified delay
-        timerFlag = null; // Clear the timerFlag to allow the main function to be executed again
-      }, delay);
-    }
-  };
 }
