@@ -69,6 +69,7 @@ type Message =
   | { kind: 'HostToIFrame', type: 'InitialPayloadResponse', envInitializer: string, initialCells: string[] }
   | { kind: 'IFrameToHost', type: 'NotebookReady' }
   | { kind: 'IFrameToHost', type: 'HeightUpdated', height: number }
+  | { kind: 'HostToIFrame', type: 'ScrollUpdated', scrollTop: number }
 
 function waitForMessage<T extends Message['type']>(targetWindow: Window, type: T): Promise<Message & {type: T}> {
   return new Promise(resolve => {
@@ -102,6 +103,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     (async () => {
       setupHeightUpdates();
+      setupStickyToolbar();
       await timeout(300);  // ILabShell needs some time to initialize...
       ilabshell.collapseLeft();
       ilabshell.collapseRight();
@@ -109,7 +111,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       ilabshell.toggleSideTabBarVisibility("right");
       ilabshell.mode = 'single-document';
 
-      const doc = idocumentmanager.createNew('Untitled.ipynb', 'default', {name: 'python'});
+      const doc = idocumentmanager.createNew('Ephemeral client-side notebook.ipynb', 'default', {name: 'python'});
 
       if (!doc || !(doc instanceof DocumentWidget)) {
         return;
@@ -134,6 +136,82 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 export default plugin;
+
+function setupStickyToolbar() {
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .jp-Toolbar.jp-NotebookPanel-toolbar, #jp-menu-panel, #jp-top-panel {
+      transition: all 350ms ease-out;
+    }
+  `;
+  document.head.appendChild(style);
+
+  let currentScrollTop = 0;
+
+  const recentDeltas = [0, 0, 0, 0, 0];
+
+  const applyOffsets = (transition: string) => {
+    const scrollTop = currentScrollTop;
+    const toolbar = document.querySelector<HTMLElement>('.jp-Toolbar.jp-NotebookPanel-toolbar');
+    if (toolbar) {
+      toolbar.style.transition = transition;
+      toolbar.style.top = `${scrollTop}px`;
+    }
+    const menu = document.querySelector<HTMLElement>('#jp-menu-panel');
+    const baselineTopOffsetForMenu = 28;
+    if (menu) {
+      menu.style.transition = transition;
+      menu.style.top = `${baselineTopOffsetForMenu + scrollTop}px`;
+    }
+    const titlebar = document.querySelector<HTMLElement>('#jp-top-panel');
+    const baselineHeightForTitlebar = 28;
+    if (titlebar) {
+      titlebar.style.transition = transition;
+      titlebar.style.paddingTop = `${scrollTop}px`;
+      titlebar.style.height = `${baselineHeightForTitlebar + scrollTop}px`;
+      // it is already border-box, but we depend on it so better to set to be more robust to changes
+      titlebar.style.boxSizing = 'border-box';
+      titlebar.style.zIndex = '5';
+    }
+  }
+
+  const handler = (event: MessageEvent<Message>) => {
+    const data = event.data;
+    if (data.type != 'ScrollUpdated') { return }
+    const scrollTop = Math.max(0, data.scrollTop);
+
+    const delta = Math.abs(currentScrollTop - scrollTop);
+    currentScrollTop = scrollTop;
+    console.log("DELTA: ", delta);
+    recentDeltas.shift();
+    recentDeltas.push(delta);
+    const maxDelta = Math.max(...recentDeltas);
+    console.log("MAX_DELTA: ", maxDelta);
+    //let transition: string | null = null;
+    //if (maxDelta < 10) {
+    //  transition = 'all 3000ms ease-out';
+    //} else if (maxDelta < 15) {
+    //  transition = 'all 1500ms ease-out';
+    //} else {
+    //  transition = 'all 100ms ease-out';
+    //}
+    applyOffsets('all 1500ms ease-out');
+  }
+
+  window.addEventListener('message', handler);
+
+  const restoreNormalTransitionImpl = () => {
+    currentScrollTop += 0.01;
+    applyOffsets('all 200ms ease-out');
+  };
+  const restoreNormalTransition = debounce(restoreNormalTransitionImpl, 200, false);
+
+  window.addEventListener('message', (event: MessageEvent<Message>) => {
+    const data = event.data;
+    if (data.type != 'ScrollUpdated') { return }
+    restoreNormalTransition();
+  })
+}
 
 async function setupHeightUpdates() {
   // source: https://blog.codeminer42.com/enhancing-user-experience-with-dynamic-iframe-height/
@@ -162,7 +240,10 @@ async function setupHeightUpdates() {
   };
 
   const style = document.createElement('style');
-  style.innerHTML = '.jp-WindowedPanel-outer::after { display: none !important; } .jp-Notebook-footer { margin-top: 10px; }';
+  style.innerHTML = `
+    .jp-WindowedPanel-outer::after { display: none !important; }
+    .jp-Notebook-footer { margin-top: 10px; }
+  `;
   document.head.appendChild(style);
 
   const observer = new MutationObserver(handleDocumentMutation);
@@ -187,4 +268,38 @@ async function setupHeightUpdates() {
     childList: true,
     characterData: true
   });
+}
+
+function debounce(func: any, wait: any, immediate: any) {
+  let timeout: any;
+  let elapsed = 0;
+
+  return function() {
+    let context = this,
+      args = arguments;
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      timeout = null;
+      if (!callNow) {
+        func.apply(context, args);
+      }
+    }, wait);
+
+    if (callNow) func.apply(context, args);
+  }
+}
+
+function throttle(mainFunction: any, delay: any) {
+  let timerFlag: any = null; // Variable to keep track of the timer
+
+  // Returning a throttled version 
+  return (...args) => {
+    if (timerFlag === null) { // If there is no timer currently running
+      mainFunction(...args); // Execute the main function 
+      timerFlag = setTimeout(() => { // Set a timer to clear the timerFlag after the specified delay
+        timerFlag = null; // Clear the timerFlag to allow the main function to be executed again
+      }, delay);
+    }
+  };
 }
