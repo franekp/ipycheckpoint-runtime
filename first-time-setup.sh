@@ -16,14 +16,14 @@ conda init || return
 conda create -n notebookpack \
     --override-channels --strict-channel-priority \
     -c conda-forge -c nodefaults \
-    jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core jupyterlab_widgets \
+    jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core jupyterlab_widgets jupyterlite-xeus \
     || return
 
 if ! conda activate notebookpack; then
     >&2 echo "Restart your shell and source this script again (conda init has updated .bashrc, must load changes in shell)"
     return
 fi
-conda install -c conda-forge jupyterlite-pyodide-kernel || return
+# conda install -c conda-forge jupyterlite-pyodide-kernel || return
 
 (
     cd jupyter-extension \

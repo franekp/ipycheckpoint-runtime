@@ -14,4 +14,4 @@ fi
 
 set -eu -o pipefail
 
-(cd jupyterlite-dist; python -m http.server -b 127.0.0.1)
+(cd jupyterlite-dist; python -m http.server -b 127.0.0.1 8001)

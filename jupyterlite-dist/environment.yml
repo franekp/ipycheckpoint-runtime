@@ -1,0 +1,36 @@
+name: xeus-python-kernel
+channels:
+  - https://repo.mamba.pm/emscripten-forge
+  - conda-forge
+dependencies:
+  - xeus-python
+
+  # data science
+  - numpy
+  - pandas
+  #- scikit-learn
+  #- scipy
+  #- statsmodels
+
+  # visualization
+  - ipywidgets
+  - plotly
+  - plotly_express
+  #- seaborn
+  #- itables
+  #- sweetviz
+
+  # misc
+  - tqdm
+  #- matplotlib
+  #- pillow
+  #- dotmap
+  #- Jinja2
+  #- pytz
+  #- PyYAML
+  #- toml
+  #- requests
+
+  #- pip:
+  #  - bokeh
+  #  - ipyaggrid

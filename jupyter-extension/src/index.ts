@@ -102,35 +102,40 @@ const plugin: JupyterFrontEndPlugin<void> = {
     (window as any).idocumentmanager = idocumentmanager;
 
     (async () => {
-      setupHeightUpdates();
-      setupStickyToolbar();
-      await timeout(300);  // ILabShell needs some time to initialize...
-      ilabshell.collapseLeft();
-      ilabshell.collapseRight();
-      ilabshell.toggleSideTabBarVisibility("left");
-      ilabshell.toggleSideTabBarVisibility("right");
-      ilabshell.mode = 'single-document';
+      try {
+        setupHeightUpdates();
+        setupStickyToolbar();
+        await timeout(300);  // ILabShell needs some time to initialize...
+        ilabshell.collapseLeft();
+        ilabshell.collapseRight();
+        ilabshell.toggleSideTabBarVisibility("left");
+        ilabshell.toggleSideTabBarVisibility("right");
+        ilabshell.mode = 'single-document';
 
-      const doc = idocumentmanager.createNew('Ephemeral client-side notebook.ipynb', 'default', {name: 'python'});
+        const doc = idocumentmanager.createNew('Ephemeral client-side notebook.ipynb', 'default', {name: 'xpython'});
 
-      if (!doc || !(doc instanceof DocumentWidget)) {
-        return;
+        if (!doc || !(doc instanceof DocumentWidget)) {
+          return;
+        }
+
+        (window as any).doc = doc;
+        (window as any).Notebook = Notebook;
+        (window as any).NotebookActions = NotebookActions;
+
+        const nb = new NotebookController(doc);
+
+        console.log(`IFRAME: sending 'InitialPayloadRequest' ...`);
+        window.parent.postMessage({ kind: 'IFrameToHost', type: 'InitialPayloadRequest' }, '*');
+        const payload = await waitForMessage(window, 'InitialPayloadResponse');
+
+        await nb.executeHidden(payload.envInitializer);
+        await nb.initWithCodeCells(payload.initialCells);
+        window.parent.postMessage({ kind: 'IFrameToHost', type: 'NotebookReady' }, '*');
+        await nb.runAllCells();
+      } catch (e) {
+        console.error(e);
+        throw e;
       }
-
-      (window as any).doc = doc;
-      (window as any).Notebook = Notebook;
-      (window as any).NotebookActions = NotebookActions;
-
-      const nb = new NotebookController(doc);
-
-      console.log(`IFRAME: sending 'InitialPayloadRequest' ...`);
-      window.parent.postMessage({ kind: 'IFrameToHost', type: 'InitialPayloadRequest' }, '*');
-      const payload = await waitForMessage(window, 'InitialPayloadResponse');
-
-      await nb.executeHidden(payload.envInitializer);
-      await nb.initWithCodeCells(payload.initialCells);
-      window.parent.postMessage({ kind: 'IFrameToHost', type: 'NotebookReady' }, '*');
-      await nb.runAllCells();
     })();
   }
 };
