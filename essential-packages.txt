@@ -1,0 +1,29 @@
+# This list of packages is not used anywhere at the moment.
+# It simply a list of packages that should be available in the notebook,
+# and ideally it shouldn't take ages to load them in the browser.
+# This list may at some time become an input to the build process.
+
+numpy
+pandas
+polars
+scikit-learn
+scipy
+statsmodels
+ipywidgets
+plotly
+plotly-express
+seaborn
+itables
+sweetviz
+tqdm
+matplotlib
+pillow
+dotmap
+Jinja2
+pytz
+PyYAML
+toml
+requests
+bokeh
+ipyaggrid
+mmh3
