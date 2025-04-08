@@ -1,0 +1,11 @@
+{
+    "customizations": {
+      "codespaces": {
+        "repositories": {
+          "franekp/pyodide-kernel": {
+            "permissions": "write-all"
+          }
+        }
+      }
+    }
+}
