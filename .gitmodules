@@ -1,0 +1,3 @@
+[submodule "pyodide-kernel"]
+	path = pyodide-kernel
+	url = https://github.com/franekp/pyodide-kernel.git

@@ -23,7 +23,6 @@ if ! conda activate notebookpack; then
     >&2 echo "Restart your shell and source this script again (conda init has updated .bashrc, must load changes in shell)"
     return
 fi
-conda install -c conda-forge jupyterlite-pyodide-kernel || return
 
 (
     cd jupyter-extension \
