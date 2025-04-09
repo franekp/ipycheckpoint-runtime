@@ -31,3 +31,8 @@ fi
     && pip install -e . \
     && jupyter labextension develop --overwrite .
 ) || return
+
+(
+    cd pyodide-kernel \
+    && yarn run quickstart
+) || return
