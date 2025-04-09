@@ -22,6 +22,14 @@ fi
 # (cd jupyter-extension && jlpm run build)
 (cd pyodide-kernel; jlpm build:prod)
 
+# rm -rf jupyterlite-dist/site
+# rm -rf jupyterlite-dist/.jupyterlite.doit.db
+rm -rf /opt/conda/envs/ipycheckpoint/share/jupyter/labextensions/@jupyterlite/pyodide-kernel-extension/
+rm -rf jupyterlite-dist/site/extensions/@jupyterlite/pyodide-kernel-extension
+
 (cd jupyterlite-dist; jupyter lite build --output-dir site \
     --FederatedExtensionAddon.extra_labextensions_path=../pyodide-kernel/jupyterlite_pyodide_kernel/
+
+    # comment or uncomment the above line if the output of jupyter lite build contains 2 or 0 occurrences of
+    # pre_build:federated_extensions:copy:ext:@jupyterlite/pyodide-kernel-extension
 )
