@@ -7,6 +7,8 @@ if [ $sourced -eq 0 ]; then
     exit 1
 fi
 
+./init-submodule.sh
+
 if ! ls jupyter-extension/ipycheckpoint_runtime/__init__.py >/dev/null 2>&1; then
     >&2 echo "This script must be sourced from the root of the ipycheckpoint-runtime repo"
     return
