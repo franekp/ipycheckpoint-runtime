@@ -31,8 +31,8 @@ jobs:
           ./build.sh
       - name: Create jupyterlite archive
         run: |
-          mv jupyterlite-dist/site notebookpack-runtime
-          zip -r notebookpack-runtime.zip notebookpack-runtime
+          mv jupyterlite-dist/site ipycheckpoint-runtime
+          zip -r ipycheckpoint-runtime.zip ipycheckpoint-runtime
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -51,6 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./notebookpack-runtime.zip
-          asset_name: notebookpack-runtime.zip
+          asset_path: ./ipycheckpoint-runtime.zip
+          asset_name: ipycheckpoint-runtime.zip
           asset_content_type: application/zip

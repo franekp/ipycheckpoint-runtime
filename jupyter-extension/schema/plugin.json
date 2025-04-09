@@ -1,7 +1,7 @@
 {
   "jupyter.lab.shortcuts": [],
-  "title": "notebookpack-runtime",
-  "description": "notebookpack-runtime settings.",
+  "title": "ipycheckpoint-runtime",
+  "description": "ipycheckpoint-runtime settings.",
   "type": "object",
   "properties": {},
   "additionalProperties": false

@@ -1,15 +1,15 @@
 {
-    "name": "notebookpack-runtime",
+    "name": "ipycheckpoint-runtime",
     "version": "0.1.0",
-    "description": "NotebookPack Runtime Initializer",
+    "description": "ipycheckpoint Runtime Initializer",
     "keywords": [
         "jupyter",
         "jupyterlab",
         "jupyterlab-extension"
     ],
-    "homepage": "https://github.com/franekp/notebookpack-runtime",
+    "homepage": "https://github.com/franekp/ipycheckpoint-runtime",
     "bugs": {
-        "url": "https://github.com/franekp/notebookpack-runtime/issues"
+        "url": "https://github.com/franekp/ipycheckpoint-runtime/issues"
     },
     "license": "BSD-3-Clause",
     "author": {
@@ -27,7 +27,7 @@
     "style": "style/index.css",
     "repository": {
         "type": "git",
-        "url": "https://github.com/franekp/notebookpack-runtime.git"
+        "url": "https://github.com/franekp/ipycheckpoint-runtime.git"
     },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
@@ -39,7 +39,7 @@
         "clean": "jlpm clean:lib",
         "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
         "clean:lintcache": "rimraf .eslintcache .stylelintcache",
-        "clean:labextension": "rimraf notebookpack_runtime/labextension notebookpack_runtime/_version.py",
+        "clean:labextension": "rimraf ipycheckpoint_runtime/labextension ipycheckpoint_runtime/_version.py",
         "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
         "eslint": "jlpm eslint:check --fix",
         "eslint:check": "eslint . --cache --ext .ts,.tsx",
@@ -98,7 +98,7 @@
     },
     "jupyterlab": {
         "extension": true,
-        "outputDir": "notebookpack_runtime/labextension",
+        "outputDir": "ipycheckpoint_runtime/labextension",
         "schemaDir": "schema"
     },
     "eslintIgnore": [

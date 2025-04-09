@@ -88,15 +88,15 @@ function waitForMessage<T extends Message['type']>(targetWindow: Window, type: T
 }
 
 /**
- * Initialization data for the notebookpack-runtime extension.
+ * Initialization data for the ipycheckpoint-runtime extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'notebookpack-runtime:plugin',
-  description: 'NotebookPack Runtime Initializer',
+  id: 'ipycheckpoint-runtime:plugin',
+  description: 'ipycheckpoint Runtime Initializer',
   autoStart: true,
   requires: [ILabShell, IDocumentManager],
   activate: (jupyterFrontEnd: JupyterFrontEnd, ilabshell: ILabShell, idocumentmanager: IDocumentManager) => {
-    console.log('JupyterLab extension notebookpack-runtime is activated!');
+    console.log('JupyterLab extension ipycheckpoint-runtime is activated!');
     (window as any).jupyter_frontend = jupyterFrontEnd;
     (window as any).ilabshell = ilabshell;
     (window as any).idocumentmanager = idocumentmanager;

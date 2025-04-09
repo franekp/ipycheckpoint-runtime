@@ -1,4 +1,4 @@
-# Making a new release of notebookpack_runtime
+# Making a new release of ipycheckpoint_runtime
 
 The extension can be published to `PyPI` and `npm` manually or using the [Jupyter Releaser](https://github.com/jupyter-server/jupyter_releaser).
 

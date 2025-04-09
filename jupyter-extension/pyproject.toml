@@ -3,7 +3,7 @@ requires = ["hatchling>=1.5.0", "jupyterlab>=4.0.0,<5", "hatch-nodejs-version>=0
 build-backend = "hatchling.build"
 
 [project]
-name = "notebookpack_runtime"
+name = "ipycheckpoint_runtime"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
@@ -33,24 +33,24 @@ source = "nodejs"
 fields = ["description", "authors", "urls", "keywords"]
 
 [tool.hatch.build.targets.sdist]
-artifacts = ["notebookpack_runtime/labextension"]
+artifacts = ["ipycheckpoint_runtime/labextension"]
 exclude = [".github", "binder"]
 
 [tool.hatch.build.targets.wheel.shared-data]
-"notebookpack_runtime/labextension" = "share/jupyter/labextensions/notebookpack-runtime"
-"install.json" = "share/jupyter/labextensions/notebookpack-runtime/install.json"
+"ipycheckpoint_runtime/labextension" = "share/jupyter/labextensions/ipycheckpoint-runtime"
+"install.json" = "share/jupyter/labextensions/ipycheckpoint-runtime/install.json"
 
 [tool.hatch.build.hooks.version]
-path = "notebookpack_runtime/_version.py"
+path = "ipycheckpoint_runtime/_version.py"
 
 [tool.hatch.build.hooks.jupyter-builder]
 dependencies = ["hatch-jupyter-builder>=0.5"]
 build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
-    "notebookpack_runtime/labextension/static/style.js",
-    "notebookpack_runtime/labextension/package.json",
+    "ipycheckpoint_runtime/labextension/static/style.js",
+    "ipycheckpoint_runtime/labextension/package.json",
 ]
-skip-if-exists = ["notebookpack_runtime/labextension/static/style.js"]
+skip-if-exists = ["ipycheckpoint_runtime/labextension/static/style.js"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 build_cmd = "build:prod"
@@ -60,7 +60,7 @@ npm = ["jlpm"]
 build_cmd = "install:extension"
 npm = ["jlpm"]
 source_dir = "src"
-build_dir = "notebookpack_runtime/labextension"
+build_dir = "ipycheckpoint_runtime/labextension"
 
 [tool.jupyter-releaser.options]
 version_cmd = "hatch version"

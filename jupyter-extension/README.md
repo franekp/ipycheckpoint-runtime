@@ -1,8 +1,8 @@
-# notebookpack_runtime
+# ipycheckpoint_runtime
 
-[![Github Actions Status](https://github.com/franekp/notebookpack-runtime/workflows/Build/badge.svg)](https://github.com/franekp/notebookpack-runtime/actions/workflows/build.yml)
+[![Github Actions Status](https://github.com/franekp/ipycheckpoint-runtime/workflows/Build/badge.svg)](https://github.com/franekp/ipycheckpoint-runtime/actions/workflows/build.yml)
 
-NotebookPack Runtime Initializer
+ipycheckpoint Runtime Initializer
 
 ## Requirements
 
@@ -13,7 +13,7 @@ NotebookPack Runtime Initializer
 To install the extension, execute:
 
 ```bash
-pip install notebookpack_runtime
+pip install ipycheckpoint_runtime
 ```
 
 ## Uninstall
@@ -21,7 +21,7 @@ pip install notebookpack_runtime
 To remove the extension, execute:
 
 ```bash
-pip uninstall notebookpack_runtime
+pip uninstall ipycheckpoint_runtime
 ```
 
 ## Contributing
@@ -36,7 +36,7 @@ The `jlpm` command is JupyterLab's pinned version of
 
 ```bash
 # Clone the repo to your local environment
-# Change directory to the notebookpack_runtime directory
+# Change directory to the ipycheckpoint_runtime directory
 # Install package in development mode
 pip install -e "."
 # Link your development version of the extension with JupyterLab
@@ -65,12 +65,12 @@ jupyter lab build --minimize=False
 ### Development uninstall
 
 ```bash
-pip uninstall notebookpack_runtime
+pip uninstall ipycheckpoint_runtime
 ```
 
 In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
-folder is located. Then you can remove the symlink named `notebookpack-runtime` within that folder.
+folder is located. Then you can remove the symlink named `ipycheckpoint-runtime` within that folder.
 
 ### Packaging the extension
 

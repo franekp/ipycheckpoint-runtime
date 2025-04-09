@@ -7,19 +7,19 @@ if [ $sourced -eq 0 ]; then
     exit 1
 fi
 
-if ! ls jupyter-extension/notebookpack_runtime/__init__.py >/dev/null 2>&1; then
-    >&2 echo "This script must be sourced from the root of the notebookpack-runtime repo"
+if ! ls jupyter-extension/ipycheckpoint_runtime/__init__.py >/dev/null 2>&1; then
+    >&2 echo "This script must be sourced from the root of the ipycheckpoint-runtime repo"
     return
 fi
 
 conda init || return
-conda create -n notebookpack \
+conda create -n ipycheckpoint \
     --override-channels --strict-channel-priority \
     -c conda-forge -c nodefaults \
     jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core jupyterlab_widgets \
     || return
 
-if ! conda activate notebookpack; then
+if ! conda activate ipycheckpoint; then
     >&2 echo "Restart your shell and source this script again (conda init has updated .bashrc, must load changes in shell)"
     return
 fi

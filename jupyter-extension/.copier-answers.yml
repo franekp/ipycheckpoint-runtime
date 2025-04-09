@@ -8,12 +8,12 @@ file_extension: ''
 has_binder: false
 has_settings: true
 kind: frontend
-labextension_name: notebookpack-runtime
+labextension_name: ipycheckpoint-runtime
 mimetype: ''
 mimetype_name: ''
-project_short_description: NotebookPack Runtime Initializer
-python_name: notebookpack_runtime
-repository: https://github.com/franekp/notebookpack-runtime
+project_short_description: ipycheckpoint Runtime Initializer
+python_name: ipycheckpoint_runtime
+repository: https://github.com/franekp/ipycheckpoint-runtime
 test: false
 viewer_name: ''
 

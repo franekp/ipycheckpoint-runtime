@@ -7,8 +7,8 @@ if [ $sourced -eq 1 ]; then
     return
 fi
 
-if ! ls jupyter-extension/notebookpack_runtime/__init__.py >/dev/null 2>&1; then
-    >&2 echo "This script must be executed from the root of the notebookpack-runtime repo"
+if ! ls jupyter-extension/ipycheckpoint_runtime/__init__.py >/dev/null 2>&1; then
+    >&2 echo "This script must be executed from the root of the ipycheckpoint-runtime repo"
     exit 1
 fi
 
