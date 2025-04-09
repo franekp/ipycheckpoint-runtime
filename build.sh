@@ -20,6 +20,8 @@ if ! [[ $(which python) =~ "ipycheckpoint" ]]; then
 fi
 
 # (cd jupyter-extension && jlpm run build)
+(cd pyodide-kernel; jlpm build:prod)
+
 (cd jupyterlite-dist; jupyter lite build --output-dir site \
     --FederatedExtensionAddon.extra_labextensions_path=../pyodide-kernel/jupyterlite_pyodide_kernel/
 )
