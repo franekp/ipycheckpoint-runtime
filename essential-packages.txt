@@ -27,3 +27,4 @@ requests
 bokeh
 ipyaggrid
 mmh3
+nbformat
