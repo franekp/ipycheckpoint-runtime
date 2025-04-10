@@ -14,4 +14,6 @@ fi
 
 set -eu -o pipefail
 
-(cd jupyterlite-dist; python -m http.server -b 127.0.0.1 8002)
+PORT="${1:-8000}"
+
+(cd jupyterlite-dist; python -m http.server -b 127.0.0.1 $PORT)
