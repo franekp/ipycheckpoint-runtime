@@ -19,8 +19,8 @@ if ! [[ $(which python) =~ "ipycheckpoint" ]]; then
    exit 1
 fi
 
-# (cd jupyter-extension && jlpm run build)
-(cd pyodide-kernel; jlpm build:prod)
+(cd jupyter-extension && jlpm run build)
+(cd pyodide-kernel && jlpm build:prod)
 
 # rm -rf jupyterlite-dist/site
 # rm -rf jupyterlite-dist/.jupyterlite.doit.db

@@ -123,11 +123,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
       const nb = new NotebookController(doc);
 
+      setTimeout(ProgressBar.show, 3000);
       console.log(`IFRAME: sending 'InitialPayloadRequest' ...`);
       window.parent.postMessage({ kind: 'IFrameToHost', type: 'InitialPayloadRequest' }, '*');
       const payload = await waitForMessage(window, 'InitialPayloadResponse');
 
       await nb.executeHidden(payload.envInitializer);
+      ProgressBar.hide();
+
       await nb.initWithCodeCells(payload.initialCells);
       window.parent.postMessage({ kind: 'IFrameToHost', type: 'NotebookReady' }, '*');
       await nb.runAllCells();
@@ -271,5 +274,81 @@ function debounce(func: any, wait: any) {
       timeout = null;
       func.apply(context, args);
     }, wait);
+  }
+}
+
+namespace ProgressBar {
+  const getHtml = (id: string, eta: number, description: string) => `
+    <style>
+      #${id} {
+        z-index: 900;
+        position: absolute;
+        left: 0px; top: 0px;
+        right: 0px; bottom: 0px;
+
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+
+      #${id} .loading-bar-wrapper, #${id} {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #${id} .loading-bar-wrapper {
+        padding: 20px;
+        background: rgb(50, 50, 50);
+      }
+
+      #${id} .loading-bar-container {
+          width: 400px;
+          height: 30px;
+          border: 4px solid white;
+          margin: 20px;
+          background: transparent;
+          position: relative;
+          overflow: hidden;
+          padding: 4px;
+      }
+
+      #${id} .loading-bar {
+          width: 100px;
+          height: 100%;
+          background: white;
+          position: relative;
+          animation: variableDeserialization ${eta}s infinite alternate ease-in-out;
+      }
+
+      #${id} .description {
+        font-size: 18px;
+      }
+
+      @keyframes variableDeserialization {
+          0% { left: 0px; }
+          100% { left: 300px; }
+      }
+    </style>
+
+    <div id="${id}">
+      <div class="loading-bar-wrapper">
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+        <div class="description">
+          ${description}
+        </div>
+      </div>
+    </div>
+  `;
+
+  export function show() {
+    const description = "Deserializing inherited variables";
+    document.body.insertAdjacentHTML('beforeend', getHtml('deserialize-inherited-variables', 2, description));
+  }
+
+  export function hide() {
+    (((document.querySelector('#deserialize-inherited-variables') || {}) as any).style || {}).display = 'none';
   }
 }
