@@ -111,7 +111,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
       ilabshell.toggleSideTabBarVisibility("right");
       ilabshell.mode = 'single-document';
 
-      const doc = idocumentmanager.createNew('Ephemeral client-side notebook.ipynb', 'default', {name: 'python'});
+      const uid = getRandomString(8);
+      const doc = idocumentmanager.createNew(`Ephemeral client-side notebook ${uid}.ipynb`, 'default', {name: 'python'});
 
       if (!doc || !(doc instanceof DocumentWidget)) {
         return;
@@ -275,6 +276,19 @@ function debounce(func: any, wait: any) {
       func.apply(context, args);
     }, wait);
   }
+}
+
+function getRandomString(length: number) {
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const result: any[] = [];
+  const values = new Uint8Array(length);
+  window.crypto.getRandomValues(values);
+
+  for (let i = 0; i < length; i++) {
+    result.push(charset[values[i] % charset.length]);
+  }
+
+  return result.join('');
 }
 
 namespace ProgressBar {
